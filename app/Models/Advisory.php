@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Advisor extends Model
+class Advisory extends Model
 {
-    use HasFactory;  
+    use HasFactory; 
   
     protected $fillable = ['student_id', 'advisor_id', 'topic', 'response'];  
   

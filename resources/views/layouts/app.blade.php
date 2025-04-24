@@ -29,8 +29,10 @@
 
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+                @yield('content')
             </main>
         </div>
+        <script src="{{ asset('js/agent.js') }}"></script>
+        <script src="{{ asset('js/behavior.js') }}"></script>
     </body>
 </html>

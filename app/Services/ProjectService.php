@@ -12,10 +12,10 @@ class ProjectService
         $this->projectRepository = $projectRepository;  
     }  
   
-    public function createProposal(array $data)  
-    {  
-        return $this->projectRepository->create($data);  
-    }  
+    public function createProject(array $data)
+    {
+        return $this->projectRepository->create($data); 
+    } 
   
     public function getProject($id)  
     {  

@@ -6,10 +6,10 @@ use App\Models\Project;
   
 class ProjectRepository  
 {  
-    public function create(array $data)  
-    {  
-        return Project::create($data);  
-    }  
+    public function create(array $data)
+    {
+        return Project::create($data);
+    }
   
     public function findById($id)  
     {  
@@ -27,8 +27,10 @@ class ProjectRepository
         return $proposal->delete();  
     }  
   
-    public function getAllProposals()  
-    {  
-        return Project::all();  
-    }  
+    public function getAllProject()
+    {
+        return Project::all();
+    }
+
+    
 }  

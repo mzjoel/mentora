@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Services\UserService;  
+use App\Http\Resources\UserResource;  
+use Illuminate\Http\Request;  
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator; 
 
 class AuthController extends Controller
 {
@@ -16,32 +21,48 @@ class AuthController extends Controller
   
     public function register(Request $request)  
     {  
-        $request->validate([  
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',  
             'email' => 'required|string|email|max:255|unique:users',  
             'password' => 'required|string|min:8',  
-        ]);  
+            'role' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }  
   
         $user = $this->userService->register($request->all());  
-        return response()->json($user, 201);  
+        return new UserResource(true, 'User registered successfully', $user); 
     }  
   
     public function login(Request $request)  
     {  
-        $request->validate([  
-            'email' => 'required|string|email',  
-            'password' => 'required|string',  
-        ]);  
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:255|unique:users',  
+            'password' => 'required|string|min:8',  
+        ]); 
   
         $user = $this->userService->login($request->all());  
   
-        if (!$user) {  
-            return response()->json(['message' => 'Unauthorized'], 401);  
-        }  
-  
-        $token = $user->createToken('YourAppName')->plainTextToken;  
-  
-        return response()->json(['token' => $token]);  
+        
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized',
+        ], 401);
+        }
+
+        $user = Auth::user();
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user,
+        ]);
     }  
   
     public function getUser()  
@@ -51,19 +72,22 @@ class AuthController extends Controller
   
     public function updateUser(Request $request)  
     {  
-        $request->validate([  
-            'name' => 'sometimes|required|string|max:255',  
-            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . Auth::id(),  
-            'password' => 'sometimes|required|string|min:8',  
-        ]);  
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',  
+            'email' => 'required|string|email|max:255|unique:users',  
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }  
   
         $user = $this->userService->updateUser(Auth::id(), $request->all());  
-        return response()->json($user);  
+        return new UserResource(true, 'Updated Successfully', $user); 
     }  
   
     public function logout()  
     {  
         Auth::user()->tokens()->delete();  
-        return response()->json(['message' => 'Logged out successfully']);  
+        return new UserResource(true, 'LogOut Successfylly', null);   
     }  
 }

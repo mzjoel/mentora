@@ -8,12 +8,12 @@ return new class extends Migration
 {
     public function up()  
     {  
-        Schema::create('advisors', function (Blueprint $table) {  
+        Schema::create('advisories', function (Blueprint $table) {  
             $table->id();  
             $table->foreignId('student_id')->constrained('users')->onDelete('cascade');  
             $table->foreignId('advisor_id')->constrained('users')->onDelete('cascade'); 
             $table->text('topic');   
-            $table->text('response')->nullable();
+            $table->text('response')->default("pending");
             $table->softDeletes();  
             $table->timestamps();  
         });  
