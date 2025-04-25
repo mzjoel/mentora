@@ -51,4 +51,9 @@ class User extends Authenticatable
     public function isStudent(){
         return $this->role === 'students';
     }
+
+    public function canAccessFilament(): bool
+{
+    return in_array($this->role, ['admin', 'students', 'lecturers']); 
+}
 }

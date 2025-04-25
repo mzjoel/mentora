@@ -22,6 +22,17 @@ class RegisteredUserController extends Controller
         return view('auth.register');
     }
 
+    protected function registered(Request $request, $user)
+    {
+        if ($user->role === 'lectures') {
+            return redirect('/mentora');
+        } elseif ($user->role === 'students') {
+            return redirect('/mentora');
+        }
+
+        return redirect('/');
+    }
+
     /**
      * Handle an incoming registration request.
      *
@@ -39,12 +50,18 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'students'
         ]);
 
         event(new Registered($user));
-
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        if ($user->role === 'lectures') {
+            return redirect('/mentora');
+        } elseif ($user->role === 'students') {
+            return redirect('/mentora');
+        }
+
+        return redirect('/');
     }
 }

@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AgentController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/mentora/login');
 });
 
 Route::get('/dashboard', function () {
