@@ -18,6 +18,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/generate-id', [AgentController::class,'generateIds']);
     Route::get('/agents', [AgentController::class, 'index'])->name('agents');
+    Route::get('/mentora/students', [DashboardController::class, 'index'])->name('students.dashboard');  
+    Route::get('/mentora/lectures', [DashboardController::class, 'index'])->name('lectures.dashboard');  
 });
 
 require __DIR__.'/auth.php';
